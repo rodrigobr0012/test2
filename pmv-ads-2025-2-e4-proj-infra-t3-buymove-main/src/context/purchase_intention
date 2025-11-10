@@ -1,0 +1,98 @@
+from flask import Flask, render_template_string, request, redirect, url_for, jsonify
+import json
+import os
+
+app = Flask(__name__)
+
+# Arquivo para salvar favoritos e interesses
+DATA_FILE = 'favorites.json'
+
+# Lista de sites de venda de carros
+car_sites = [
+    {"id": 1, "name": "Webmotors", "url": "https://www.webmotors.com.br"},
+    {"id": 2, "name": "OLX Autos", "url": "https://www.olx.com.br/autos-e-pecas"},
+    {"id": 3, "name": "iCarros", "url": "https://www.icarros.com.br"},
+    {"id": 4, "name": "Carros UOL", "url": "https://carros.uol.com.br"},
+]
+
+# Funções para salvar e carregar dados
+def load_data():
+    if os.path.exists(DATA_FILE):
+        with open(DATA_FILE, 'r') as f:
+            return json.load(f)
+    return {"favorites": [], "interests": []}
+
+def save_data(data):
+    with open(DATA_FILE, 'w') as f:
+        json.dump(data, f, indent=4)
+
+@app.route('/')
+def home():
+    data = load_data()
+    return render_template_string('''
+    <html>
+    <head>
+        <title>Sites de Carros</title>
+        <style>
+            body { font-family: Arial; background: #f8f9fa; color: #333; padding: 20px; }
+            .card { background: white; padding: 15px; border-radius: 10px; margin: 10px 0;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+            button { margin-top: 8px; background-color: #007BFF; color: white; 
+                     border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
+            button:hover { background-color: #0056b3; }
+        </style>
+    </head>
+    <body>
+        <h1>🚗 Sites de Venda de Carros</h1>
+        <p>Selecione um site e marque seu interesse.</p>
+
+        {% for site in sites %}
+        <div class="card">
+            <h3>{{ site.name }}</h3>
+            <a href="{{ site.url }}" target="_blank">{{ site.url }}</a><br>
+            <form action="{{ url_for('add_favorite', site_id=site.id) }}" method="post" style="display:inline;">
+                <button>⭐ Favoritar</button>
+            </form>
+            <form action="{{ url_for('add_interest', site_id=site.id) }}" method="post" style="display:inline;">
+                <button>🛒 Tenho Interesse</button>
+            </form>
+        </div>
+        {% endfor %}
+
+        <h2>⭐ Meus Favoritos</h2>
+        <ul>
+        {% for s in data.favorites %}
+            <li>{{ s }}</li>
+        {% endfor %}
+        </ul>
+
+        <h2>🛒 Interesses de Compra</h2>
+        <ul>
+        {% for s in data.interests %}
+            <li>{{ s }}</li>
+        {% endfor %}
+        </ul>
+    </body>
+    </html>
+    ''', sites=car_sites, data=data)
+
+@app.route('/favorite/<int:site_id>', methods=['POST'])
+def add_favorite(site_id):
+    data = load_data()
+    site = next((s for s in car_sites if s["id"] == site_id), None)
+    if site and site["name"] not in data["favorites"]:
+        data["favorites"].append(site["name"])
+        save_data(data)
+    return redirect(url_for('home'))
+
+@app.route('/interest/<int:site_id>', methods=['POST'])
+def add_interest(site_id):
+    data = load_data()
+    site = next((s for s in car_sites if s["id"] == site_id), None)
+    if site and site["name"] not in data["interests"]:
+        data["interests"].append(site["name"])
+        save_data(data)
+    return redirect(url_for('home'))
+
+if __name__ == '__main__':
+    app.run(debug=True)

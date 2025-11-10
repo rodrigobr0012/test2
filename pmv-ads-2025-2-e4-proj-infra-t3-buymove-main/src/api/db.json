@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "marca": "Toyota",
+    "modelo": "Corolla",
+    "ano": 2023,
+    "imagem_url": "Corola.jpeg" 
+  },
+  {
+    "id": 2,
+    "marca": "Fiat",
+    "modelo": "Uno",
+    "ano": 2022,
+    "imagem_url": "FiatMobi.webp"
+  },
+  {
+    "id": 3,
+    "marca": "Fiat",
+    "modelo": "Mobi",
+    "ano": 2024,
+    "imagem_url": "FiatUno.jpg"
+  }
+]

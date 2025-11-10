@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "buymove-backend"
+version = "0.1.0"
+description = "Backend de API para o app movel buyMove com MongoDB"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi==0.115.0",
+    "uvicorn[standard]==0.30.3",
+    "motor==3.7.1",
+    "pydantic==2.9.2",
+    "pydantic-settings==2.7.0",
+    "passlib[bcrypt]==1.7.4",
+    "python-jose[cryptography]==3.3.0",
+    "python-multipart==0.0.9",
+    "email-validator==2.2.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "httpx==0.27.0",
+    "pytest==8.3.2",
+    "pytest-asyncio==0.23.8"
+]
+
+[tool.setuptools.packages.find]
+where = ["app"]

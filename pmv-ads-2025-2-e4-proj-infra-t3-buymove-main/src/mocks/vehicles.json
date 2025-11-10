@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "title": "Toyota Corolla 2.0 Altis",
+    "brand": "Toyota",
+    "year": 2020,
+    "price": 112900,
+    "km": 45000,
+    "gearbox": "Autom\u00e1tico",
+    "fuel": "Flex",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Toyota_Corolla_Hybrid_%28E210%29_IMG_4338.jpg/1280px-Toyota_Corolla_Hybrid_%28E210%29_IMG_4338.jpg",
+    "gallery": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Toyota_Corolla_Hybrid_%28E210%29_IMG_4338.jpg/1280px-Toyota_Corolla_Hybrid_%28E210%29_IMG_4338.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Toyota_Corolla_%28E210%29_sedan_IMG_4189.jpg/1280px-Toyota_Corolla_%28E210%29_sedan_IMG_4189.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Toyota_Corolla_%28E210%29_sedan_IMG_4190.jpg/1280px-Toyota_Corolla_%28E210%29_sedan_IMG_4190.jpg"
+    ],
+    "location": "Belo Horizonte - MG",
+    "color": "Prata",
+    "doors": 4,
+    "description": "Revis\u00f5es em dia, \u00fanico dono, chave reserva."
+  },
+  {
+    "id": 2,
+    "title": "Honda Civic 1.5 Touring",
+    "brand": "Honda",
+    "year": 2019,
+    "price": 124500,
+    "km": 52000,
+    "gearbox": "CVT",
+    "fuel": "Gasolina",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Honda_Civic_e-HEV_Sport_%28XI%29_%E2%80%93_f_30062024.jpg/1280px-Honda_Civic_e-HEV_Sport_%28XI%29_%E2%80%93_f_30062024.jpg",
+    "gallery": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Honda_Civic_e-HEV_Sport_%28XI%29_%E2%80%93_f_30062024.jpg/1280px-Honda_Civic_e-HEV_Sport_%28XI%29_%E2%80%93_f_30062024.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Honda_Civic_Limousine_1.5_VTEC_Turbo_Executive_CVT_%28X%29_%E2%80%93_f_26122020.jpg/1280px-Honda_Civic_Limousine_1.5_VTEC_Turbo_Executive_CVT_%28X%29_%E2%80%93_f_26122020.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/2022_Honda_Civic_Touring_in_Lunar_Silver_Metallic%2C_Front_Left%2C_05-10-2022.jpg/1280px-2022_Honda_Civic_Touring_in_Lunar_Silver_Metallic%2C_Front_Left%2C_05-10-2022.jpg"
+    ],
+    "location": "Contagem - MG",
+    "color": "Preto",
+    "doors": 4,
+    "description": "Top de linha, manual, pneus novos."
+  },
+  {
+    "id": 3,
+    "title": "Volkswagen Gol 1.6 MSI",
+    "brand": "Volkswagen",
+    "year": 2018,
+    "price": 42900,
+    "km": 68000,
+    "gearbox": "Manual",
+    "fuel": "Flex",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Volkswagen_Gol_Highline_2023_%2853708009248%29_%28cropped%29.jpg/1280px-Volkswagen_Gol_Highline_2023_%2853708009248%29_%28cropped%29.jpg",
+    "gallery": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Volkswagen_Gol_Highline_2023_%2853708009248%29_%28cropped%29.jpg/1280px-Volkswagen_Gol_Highline_2023_%2853708009248%29_%28cropped%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Volkswagen_Gol_1.6_Trend_2011_%2813905746028%29.jpg/1280px-Volkswagen_Gol_1.6_Trend_2011_%2813905746028%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Volkswagen_Gol_1.6_Power_2013_%2812489173025%29.jpg/1280px-Volkswagen_Gol_1.6_Power_2013_%2812489173025%29.jpg"
+    ],
+    "location": "Betim - MG",
+    "color": "Branco",
+    "doors": 4,
+    "description": "\u00d3timo estado, econ\u00f4mico, IPVA pago."
+  }
+]

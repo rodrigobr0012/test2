@@ -1,0 +1,187 @@
+Metadata-Version: 2.4
+Name: buymove-backend
+Version: 0.1.0
+Summary: Backend de API para o app movel buyMove com MongoDB
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi==0.115.0
+Requires-Dist: uvicorn[standard]==0.30.3
+Requires-Dist: motor==3.7.1
+Requires-Dist: pydantic==2.9.2
+Requires-Dist: pydantic-settings==2.7.0
+Requires-Dist: passlib[bcrypt]==1.7.4
+Requires-Dist: python-jose[cryptography]==3.3.0
+Requires-Dist: python-multipart==0.0.9
+Requires-Dist: email-validator==2.2.0
+Provides-Extra: dev
+Requires-Dist: httpx==0.27.0; extra == "dev"
+Requires-Dist: pytest==8.3.2; extra == "dev"
+Requires-Dist: pytest-asyncio==0.23.8; extra == "dev"
+
+# buyMove Backend
+
+Backend em Python para sustentar o app mobile (e o site) do projeto buyMove. A API foi construida com FastAPI, usa MongoDB como banco de dados e entrega recursos de autenticacao, catalogo de veiculos e gerenciamento de favoritos. O desenho segue os requisitos levantados na aplicacao web para reutilizacao total no app mobile.
+
+## Principais recursos
+- Autenticacao JWT com registro e login de usuarios
+- CRUD de veiculos com filtros de busca por texto, marca, faixa de preco, cor, portas e localizacao
+- Recomendacoes de veiculos com base em marca e faixa de preco
+- Lista e gerenciamento de favoritos vinculados ao usuario logado
+- Configuracao de CORS pronta para web (Vite) e mobile (Expo)
+
+## Stack tecnica
+- Python 3.11+
+- FastAPI
+- Motor (driver assincrono do MongoDB)
+- Passlib + Python-JOSE para hashing e tokens JWT
+- Pydantic v2 e pydantic-settings para validacoes e configuracoes
+
+## Estrutura de diretorios
+```
+src/backend/
+  app/
+    core/            # Configuracoes globais, conexao com o Mongo e helpers de seguranca
+    dependencies/    # Funcoes reutilizaveis para injetar servicos e autenticacao
+    models/          # Esquemas Pydantic usados nos requests/responses da API
+    routers/         # Modulos FastAPI agrupando endpoints por dominio
+    services/        # Regras de negocio e integracoes com o MongoDB
+    utils/           # Utilidades como o conversor de ObjectId
+    main.py          # Criacao da aplicacao FastAPI e registro dos routers
+  .env.example       # Variaveis de ambiente base
+  pyproject.toml     # Declaracao de dependencias (pip/uvicorn etc.)
+  requirements.txt   # Alternativa simples para instalacao das libs
+```
+
+## Preparacao do ambiente
+1. Garanta que o MongoDB esteja disponivel localmente. Exemplo com Docker:
+   ```bash
+   docker run --name buymove-mongo -p 27017:27017 -d mongo:7
+   ```
+2. Copie o arquivo de variaveis e ajuste as credenciais:
+   ```bash
+   cd src/backend
+   copy .env.example .env  # Windows
+   # ou
+   cp .env.example .env    # Linux/macOS
+   ```
+3. Crie e ative um ambiente virtual Python 3.11+:
+   ```bash
+   python -m venv .venv
+   .venv\Scripts\activate  # Windows
+   source .venv/bin/activate  # Linux/macOS
+   ```
+4. Instale as dependencias (via pyproject ou requirements):
+   ```bash
+   pip install -e .
+   # ou
+   pip install -r requirements.txt
+   ```
+5. Suba o servidor em modo desenvolvimento:
+   ```bash
+   uvicorn app.main:app --reload --port 8000
+   ```
+
+A documentacao interativa fica disponivel em http://localhost:8000/docs.
+
+## Variaveis de ambiente
+| Variavel | Descricao |
+| --- | --- |
+| APP_NAME | Nome exibido na documentacao da API |
+| ENVIRONMENT | Ambiente de execucao (development, staging, production) |
+| MONGODB_URI | String de conexao com o MongoDB |
+| MONGODB_DB | Nome do banco usado pela aplicacao |
+| JWT_SECRET | Segredo usado para assinar tokens JWT (troque em producao) |
+| JWT_ALGORITHM | Algoritmo do token (padrao HS256) |
+| ACCESS_TOKEN_EXPIRE_MINUTES | Tempo de expiracao dos tokens em minutos |
+| CORS_ORIGINS | Lista separada por virgula com os dominios autorizados |
+
+## Endpoints principais
+### Autenticacao
+- POST /auth/register - cria usuario (nome, documento opcional, contato e senha)
+- POST /auth/login - retorna access_token (Bearer) via fluxo OAuth2 password
+- GET /auth/me / GET /users/me - dados do usuario logado
+
+### Veiculos
+- GET /vehicles - lista paginada com filtros: q, brand, color, doors, location, min_price, max_price, page, page_size
+- GET /vehicles/{id} - detalhes de um veiculo
+- POST /vehicles - cadastra veiculo (requer token). Usa o usuario logado como vendedor padrao
+- PATCH /vehicles/{id} - atualiza dados (somente dono ou admin)
+- DELETE /vehicles/{id} - remove veiculo (somente dono ou admin)
+- GET /vehicles/{id}/recommendations - sugere ate 6 similares
+
+### Favoritos
+- GET /favorites - lista favoritos do usuario, incluindo o objeto do veiculo
+- POST /favorites - body { "vehicle_id": "..." }
+- DELETE /favorites/{vehicle_id} - remove favorito especifico
+
+## Exemplos de uso
+### Registro de usuario
+```http
+POST /auth/register
+Content-Type: application/json
+
+{
+  "email": "ana@example.com",
+  "password": "SenhaForte123",
+  "full_name": "Ana Santos",
+  "phone": "+55 31 90000-0000",
+  "document": "12345678900"
+}
+```
+
+### Login
+```http
+POST /auth/login
+Content-Type: application/x-www-form-urlencoded
+
+username=ana@example.com&password=SenhaForte123
+```
+Resposta:
+```json
+{
+  "access_token": "eyJhbGciOi...",
+  "token_type": "bearer"
+}
+```
+
+### Busca de veiculos
+```http
+GET /vehicles?q=sedan&brand=Toyota&min_price=50000&max_price=120000&page=1&page_size=12
+Authorization: Bearer <token>
+```
+
+### Cadastro de veiculo
+```http
+POST /vehicles
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "title": "Corolla Altis 2022",
+  "brand": "Toyota",
+  "model": "Corolla",
+  "version": "Altis 2.0",
+  "year": 2022,
+  "price": 129900,
+  "mileage": 18000,
+  "color": "Branco",
+  "doors": 4,
+  "fuel_type": "Flex",
+  "transmission": "CVT",
+  "location": "Belo Horizonte - MG",
+  "description": "Veiculo revisado, unico dono, todas as revisoes na concessionaria.",
+  "images": ["https://.../frente.jpg", "https://.../painel.jpg"],
+  "features": ["Bancos em couro", "Piloto automatico", "6 airbags"]
+}
+```
+
+## Integracao com o app mobile
+- O app mobile pode reutilizar o mesmo fluxo da web: apos POST /auth/login, armazene o token JWT e envie em Authorization: Bearer <token>.
+- Os filtros e parametros de GET /vehicles sao identicos aos usados no frontend React atual, facilitando a sincronizacao.
+- A resposta de favoritos ja inclui os dados do veiculo, evitando multiplas chamadas em telas de listagem.
+- Recomenda-se criar um servico HTTP no app mobile que centralize a leitura do token e o refresh (quando o tempo de expiracao for reduzido). O tempo padrao configurado e de 24 horas.
+
+## Proximos passos sugeridos
+- Implementar notificacoes push no mobile disparando alertas de preco a partir de triggers no MongoDB ou jobs agendados.
+- Criar testes de integracao com HTTPX/Pytest (pip install .[dev]) validando os fluxos criticos.
+- Conectar o frontend web/mobile a API substituindo os mocks (VITE_USE_MOCKS=false e VITE_API_BASE_URL=http://localhost:8000).

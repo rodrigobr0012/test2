@@ -37,15 +37,26 @@ async def get_user_by_email(db: AsyncIOMotorDatabase, email: str) -> UserInDB | 
     raw = await db.users.find_one({"email": email.lower()})
     if not raw:
         return None
+
+    # 👇 converte o ObjectId para string antes de validar
+    if "_id" in raw and isinstance(raw["_id"], ObjectId):
+        raw["_id"] = str(raw["_id"])
+
     return UserInDB.model_validate(raw)
 
 
 async def get_user_by_id(db: AsyncIOMotorDatabase, user_id: str) -> UserInDB | None:
     if not ObjectId.is_valid(user_id):
         return None
+
     raw = await db.users.find_one({"_id": ObjectId(user_id)})
     if not raw:
         return None
+
+    # 👇 mesma coisa aqui
+    if "_id" in raw and isinstance(raw["_id"], ObjectId):
+        raw["_id"] = str(raw["_id"])
+
     return UserInDB.model_validate(raw)
 
 

@@ -1,10 +1,12 @@
-﻿import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import ContactSellerButton from "@/components/ContactSellerButton";
 import { useFavorites } from "@/context/favorites-context";
 
 export default function VehicleCard({ v, quick = false }) {
   const { favorites, toggleFavorite } = useFavorites();
-  const isFav = favorites.some((f) => f.id === v.id);
+  const [isUpdatingFavorite, setIsUpdatingFavorite] = useState(false);
+  const isFav = favorites.some((f) => String(f.id) === String(v.id));
 
   const containerClass = quick
     ? "grid gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-lg sm:grid-cols-3"
@@ -15,6 +17,21 @@ export default function VehicleCard({ v, quick = false }) {
     : "h-48 w-full rounded-xl object-cover";
 
   const bodyClass = quick ? "sm:col-span-2 flex flex-col gap-3" : "flex flex-col gap-3";
+
+  const handleToggleFavorite = async () => {
+    if (isUpdatingFavorite) return;
+    setIsUpdatingFavorite(true);
+    try {
+      await toggleFavorite(v);
+    } catch (error) {
+      console.error("Não foi possível atualizar o favorito", error);
+      if (typeof window !== "undefined") {
+        window.alert?.("Não foi possível atualizar seus favoritos. Tente novamente.");
+      }
+    } finally {
+      setIsUpdatingFavorite(false);
+    }
+  };
 
   return (
     <div className={containerClass}>
@@ -34,8 +51,10 @@ export default function VehicleCard({ v, quick = false }) {
         </div>
         <div className="flex flex-wrap gap-2">
           <button
-            onClick={() => toggleFavorite(v)}
-            className="rounded-full bg-blue-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-blue-800"
+            type="button"
+            onClick={handleToggleFavorite}
+            disabled={isUpdatingFavorite}
+            className={`rounded-full bg-blue-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60`}
           >
             {isFav ? "Remover favorito" : "Favoritar"}
           </button>
@@ -51,4 +70,3 @@ export default function VehicleCard({ v, quick = false }) {
     </div>
   );
 }
-
